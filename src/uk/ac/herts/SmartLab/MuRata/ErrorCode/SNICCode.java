@@ -1,0 +1,76 @@
+﻿package uk.ac.herts.SmartLab.MuRata.ErrorCode;
+
+public enum SNICCode {
+	SNIC_NORESPONSE, SNIC_SUCCESS, SNIC_FAIL, SNIC_INIT_FAIL, SNIC_CLEANUP_FAIL, SNIC_GETADDRINFO_FAIL, SNIC_CREATE_SOCKET_FAIL, SNIC_BIND_SOCKET_FAIL, SNIC_LISTEN_SOCKET_FAIL, SNIC_ACCEPT_SOCKET_FAIL, SNIC_SOCKET_CLOSED, SNIC_CLOSE_SOCKET_FAIL, SNIC_PACKET_TOO_LARGE, SNIC_SEND_FAIL, SNIC_CONNECT_TO_SERVER_FAIL, SNIC_NOT_ENOUGH_MEMORY, SNIC_TIMEOUT, SNIC_CONNECTION_UP, SNIC_GETSOCKOPT_FAIL, SNIC_SETSOCKOPT_FAIL, SNIC_INVALID_ARGUMENT, SNIC_SEND_ARP_FAIL, SNIC_INVALID_SOCKET, SNIC_COMMAND_PENDING, SNIC_SOCKET_NOT_BOUND, SNIC_SOCKET_NOT_CONNECTED, SNIC_NO_NETWORK, SNIC_INIT_NOT_DONE, SNIC_NET_IF_FAIL, SNIC_NET_IF_NOT_UP, SNIC_DHCP_START_FAIL;
+
+	public static SNICCode parse(int value) {
+		switch (value) {
+		case -1:
+			return SNIC_NORESPONSE;
+		case 0x00:
+			return SNIC_SUCCESS;
+		case 0x01:
+			return SNIC_FAIL;
+		case 0x02:
+			return SNIC_INIT_FAIL;
+		case 0x03:
+			return SNIC_CLEANUP_FAIL;
+		case 0x04:
+			return SNIC_GETADDRINFO_FAIL;
+		case 0x05:
+			return SNIC_CREATE_SOCKET_FAIL;
+		case 0x06:
+			return SNIC_BIND_SOCKET_FAIL;
+		case 0x07:
+			return SNIC_LISTEN_SOCKET_FAIL;
+		case 0x08:
+			return SNIC_ACCEPT_SOCKET_FAIL;
+		case 0x0B:
+			return SNIC_SOCKET_CLOSED;
+		case 0x0C:
+			return SNIC_CLOSE_SOCKET_FAIL;
+		case 0x0D:
+			return SNIC_PACKET_TOO_LARGE;
+		case 0x0E:
+			return SNIC_SEND_FAIL;
+		case 0x0F:
+			return SNIC_CONNECT_TO_SERVER_FAIL;
+		case 0x10:
+			return SNIC_NOT_ENOUGH_MEMORY;
+		case 0x11:
+			return SNIC_TIMEOUT;
+		case 0x12:
+			return SNIC_CONNECTION_UP;
+		case 0x13:
+			return SNIC_GETSOCKOPT_FAIL;
+		case 0x14:
+			return SNIC_SETSOCKOPT_FAIL;
+		case 0x15:
+			return SNIC_INVALID_ARGUMENT;
+		case 0x16:
+			return SNIC_SEND_ARP_FAIL;
+		case 0x17:
+			return SNIC_INVALID_SOCKET;
+		case 0x18:
+			return SNIC_COMMAND_PENDING;
+		case 0x19:
+			return SNIC_SOCKET_NOT_BOUND;
+		case 0x1A:
+			return SNIC_SOCKET_NOT_CONNECTED;
+		case 0x20:
+			return SNIC_NO_NETWORK;
+		case 0x21:
+			return SNIC_INIT_NOT_DONE;
+		case 0x22:
+			return SNIC_NET_IF_FAIL;
+		case 0x23:
+			return SNIC_NET_IF_NOT_UP;
+		case 0x24:
+			return SNIC_DHCP_START_FAIL;
+
+		}
+
+		return null;
+
+	}
+}
