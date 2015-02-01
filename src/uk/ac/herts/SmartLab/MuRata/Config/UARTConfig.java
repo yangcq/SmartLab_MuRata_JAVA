@@ -69,9 +69,6 @@ public class UARTConfig implements IConfig {
 		return this.value;
 	}
 
-	public UARTConfig() {
-	}
-
 	public UARTConfig(FlowControl flowControl, Parity parity,
 			StopBits StopBits, BaudRate baudRate) {
 		this.SetFlowControl(flowControl).SetParity(parity)

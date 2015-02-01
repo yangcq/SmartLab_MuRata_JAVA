@@ -1,7 +1,5 @@
 ﻿package uk.ac.herts.SmartLab.MuRata.Indication;
 
-import java.util.ArrayList;
-
 import uk.ac.herts.SmartLab.MuRata.Payload;
 import uk.ac.herts.SmartLab.MuRata.Type.*;
 
@@ -20,17 +18,19 @@ public class SSIDRecordIndication extends Payload {
 		if (count <= 0)
 			return null;
 
+		int index = 0;
 		int _position = 3;
 
-		ArrayList<WIFINetworkDetail> list = new ArrayList<WIFINetworkDetail>();
+		WIFINetworkDetail[] list = new WIFINetworkDetail[count];
 
 		byte[] value = this.GetData();
 
 		while (_position < this.GetPosition()) {
-			WIFINetworkDetail detail = new WIFINetworkDetail();
+			list[index] = new WIFINetworkDetail();
 
 			try {
-				detail.SetChannel(value[_position++])
+				list[index]
+						.SetChannel(value[_position++])
 						.SetRSSI(value[_position++])
 						.SetSecurityMode(SecurityMode.parse(value[_position++]))
 						.SetBSSID(
@@ -47,17 +47,16 @@ public class SSIDRecordIndication extends Payload {
 				while (value[_position++] != 0x00) {
 				}
 
-				detail.SetSSID(new String(this.GetData(), start, _position
+				list[index].SetSSID(new String(this.GetData(), start, _position
 						- start - 1));
 
-				list.add(detail);
+				index++;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		WIFINetworkDetail[] container = new WIFINetworkDetail[list.size()];
-		return list.toArray(container);
+		return list;
 	}
 }
