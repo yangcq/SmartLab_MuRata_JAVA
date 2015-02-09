@@ -40,13 +40,13 @@ public class Payload {
 	// / <returns></returns>
 	public ResponseFlag GetResponseFlag() {
 		if ((data[0] >> 7) == 0x01)
-			return ResponseFlag.Response_Confirmation;
+			return ResponseFlag.Response_or_Confirmation;
 		else
-			return ResponseFlag.Request_Indication;
+			return ResponseFlag.Request_or_Indication;
 	}
 
 	public void SetResponseFlag(ResponseFlag flag) {
-		if (flag == ResponseFlag.Request_Indication)
+		if (flag == ResponseFlag.Request_or_Indication)
 			data[0] &= 0x7F;
 		else
 			data[0] |= 0x80;

@@ -19,7 +19,7 @@ public class MuRata {
 
 	private byte frameID = 0x00;
 
-	private Payload _sendPayload, _receivePayload, _safePayload;
+	private Payload _sendPayload, _receivePayload;
 	private UARTFrame _sendFrame, _receiveFrame;
 
 	private OutputStream outputStream;
@@ -33,7 +33,7 @@ public class MuRata {
 		_receivePayload = new Payload();
 		_receiveFrame = new UARTFrame();
 		_receiveFrame.SetPayload(_receivePayload);
-		_safePayload = new Payload();
+		_sendPayload = new Payload();
 
 		this.outputStream = outputStream;
 		this.inputStream = inputStream;
@@ -59,6 +59,9 @@ public class MuRata {
 	private void Send(boolean signal) {
 
 		try {
+			_sendFrame.SetACKRequired(false);
+			_sendPayload.SetResponseFlag(ResponseFlag.Request_or_Indication);
+			
 			outputStream.write(UARTFrame.SOM);
 			isSignal = signal;
 
@@ -130,15 +133,15 @@ public class MuRata {
 							&& _receivePayload.GetFrameID() == _sendPayload
 									.GetFrameID()) {
 						isSignal = false;
-						_safePayload.Rewind();
-						_safePayload.SetContent(_receivePayload.GetData(), 0,
+						_sendPayload.Rewind();
+						_sendPayload.SetContent(_receivePayload.GetData(), 0,
 								_receivePayload.GetPosition());
 
 						synchronized (MuRata.this) {
 							MuRata.this.notify();
 						}
 					} else {
-						if (_receivePayload.GetResponseFlag() == ResponseFlag.Request_Indication) {
+						if (_receivePayload.GetResponseFlag() == ResponseFlag.Request_or_Indication) {
 							switch (_receiveFrame.GetCommandID()) {
 							case CMD_ID_GEN:
 								GENIndication();
@@ -246,7 +249,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new VersionInfoResponse(_safePayload);
+		return new VersionInfoResponse(_sendPayload);
 	}
 
 	public CMDCode GEN_RestoreNVMtoFactoryDefault() {
@@ -273,7 +276,7 @@ public class MuRata {
 			return CMDCode.GEN_NORESPONSE;
 		}
 
-		return CMDCode.parse(_safePayload.GetData()[2]);
+		return CMDCode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public CMDCode GEN_SoftReset() {
@@ -300,7 +303,7 @@ public class MuRata {
 			return CMDCode.GEN_NORESPONSE;
 		}
 
-		return CMDCode.parse(_safePayload.GetData()[2]);
+		return CMDCode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public CMDCode GEN_UARTConfiguration(UARTConfig config) {
@@ -328,7 +331,7 @@ public class MuRata {
 			return CMDCode.GEN_NORESPONSE;
 		}
 
-		return CMDCode.parse(_safePayload.GetData()[2]);
+		return CMDCode.parse(_sendPayload.GetData()[2]);
 	}
 
 	// Command ID for WIFI
@@ -367,7 +370,7 @@ public class MuRata {
 			return WIFICode.WIFI_NORESPONSE;
 		}
 
-		return WIFICode.parse(_safePayload.GetData()[2]);
+		return WIFICode.parse(_sendPayload.GetData()[2]);
 
 	}
 
@@ -395,7 +398,7 @@ public class MuRata {
 			return WIFICode.WIFI_NORESPONSE;
 		}
 
-		return WIFICode.parse(_safePayload.GetData()[2]);
+		return WIFICode.parse(_sendPayload.GetData()[2]);
 
 	}
 
@@ -437,7 +440,7 @@ public class MuRata {
 			return WIFICode.WIFI_NORESPONSE;
 		}
 
-		return WIFICode.parse(_safePayload.GetData()[2]);
+		return WIFICode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public WIFICode WIFI_AssociateNetwork(WIFINetwork AP) {
@@ -476,7 +479,7 @@ public class MuRata {
 			return WIFICode.WIFI_NORESPONSE;
 		}
 
-		return WIFICode.parse(_safePayload.GetData()[2]);
+		return WIFICode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public WIFICode WIFI_DisconnectNetwork() {
@@ -503,7 +506,7 @@ public class MuRata {
 			return WIFICode.WIFI_NORESPONSE;
 		}
 
-		return WIFICode.parse(_safePayload.GetData()[2]);
+		return WIFICode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public WIFIStatusResponse WIFI_GetStatus(WIFIInterface WiFiInterface) {
@@ -531,7 +534,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new WIFIStatusResponse(_safePayload);
+		return new WIFIStatusResponse(_sendPayload);
 	}
 
 	// / <summary>
@@ -563,10 +566,10 @@ public class MuRata {
 			return 127;
 		}
 
-		byte value = _safePayload.GetData()[2];
+		byte value = _sendPayload.GetData()[2];
 
 		if (value >> 7 == 0x01)
-			return (~(_safePayload.GetData()[2] - 1) & 0x7F) * -1;
+			return (~(_sendPayload.GetData()[2] - 1) & 0x7F) * -1;
 
 		return value;
 	}
@@ -609,7 +612,7 @@ public class MuRata {
 			return WIFICode.WIFI_NORESPONSE;
 		}
 
-		return WIFICode.parse(_safePayload.GetData()[2]);
+		return WIFICode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public WIFICode WIFI_ScanNetworks(ScanType scan, BSSType bss) {
@@ -703,7 +706,7 @@ public class MuRata {
 			return WIFICode.WIFI_NORESPONSE;
 		}
 
-		return WIFICode.parse(_safePayload.GetData()[2]);
+		return WIFICode.parse(_sendPayload.GetData()[2]);
 	}
 
 	// SNIC API
@@ -738,7 +741,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new InitializationResponse(_safePayload);
+		return new InitializationResponse(_sendPayload);
 	}
 
 	public SNICCode SNIC_Cleanup() {
@@ -765,7 +768,7 @@ public class MuRata {
 			return SNICCode.SNIC_NORESPONSE;
 		}
 
-		return SNICCode.parse(_safePayload.GetData()[2]);
+		return SNICCode.parse(_sendPayload.GetData()[2]);
 	}
 
 	// / <summary>
@@ -817,7 +820,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new SendFromSocketResponse(_safePayload);
+		return new SendFromSocketResponse(_sendPayload);
 	}
 
 	public SendFromSocketResponse SNIC_SendFromSocket(byte SocketID,
@@ -850,7 +853,7 @@ public class MuRata {
 			return SNICCode.SNIC_NORESPONSE;
 		}
 
-		return SNICCode.parse(_safePayload.GetData()[2]);
+		return SNICCode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public DHCPInfoResponse SNIC_GetDHCPInfo(WIFIInterface wifiInterface) {
@@ -878,7 +881,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new DHCPInfoResponse(_safePayload);
+		return new DHCPInfoResponse(_sendPayload);
 	}
 
 	public IPAddress SNIC_ResolveHostName(String host) {
@@ -910,8 +913,8 @@ public class MuRata {
 			return null;
 		}
 
-		if (SNICCode.parse(_safePayload.GetData()[2]) == SNICCode.SNIC_SUCCESS)
-			return new IPAddress(_safePayload.GetData(), 3);
+		if (SNICCode.parse(_sendPayload.GetData()[2]) == SNICCode.SNIC_SUCCESS)
+			return new IPAddress(_sendPayload.GetData(), 3);
 
 		return null;
 	}
@@ -953,7 +956,7 @@ public class MuRata {
 			return SNICCode.SNIC_NORESPONSE;
 		}
 
-		return SNICCode.parse(_safePayload.GetData()[2]);
+		return SNICCode.parse(_sendPayload.GetData()[2]);
 	}
 
 	public SocketStartReceiveResponse SNIC_ConnectTCPServer(byte SocketID,
@@ -1015,7 +1018,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new SocketStartReceiveResponse(_safePayload);
+		return new SocketStartReceiveResponse(_sendPayload);
 	}
 
 	public CreateSocketResponse SNIC_CreateTCPSocket(boolean bind) {
@@ -1098,7 +1101,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new CreateSocketResponse(_safePayload);
+		return new CreateSocketResponse(_sendPayload);
 	}
 
 	public SocketStartReceiveResponse SNIC_StartUDPReceive(byte SocketID) {
@@ -1156,7 +1159,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new SocketStartReceiveResponse(_safePayload);
+		return new SocketStartReceiveResponse(_sendPayload);
 	}
 
 	// / <summary>
@@ -1202,7 +1205,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new SendFromSocketResponse(_safePayload);
+		return new SendFromSocketResponse(_sendPayload);
 	}
 
 	// / <summary>
@@ -1284,7 +1287,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new SendFromSocketResponse(_safePayload);
+		return new SendFromSocketResponse(_sendPayload);
 	}
 
 	// / <summary>
@@ -1383,7 +1386,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new HTTPResponse(_safePayload);
+		return new HTTPResponse(_sendPayload);
 	}
 
 	// / <summary>
@@ -1433,7 +1436,7 @@ public class MuRata {
 			return null;
 		}
 
-		return new HTTPResponse(_safePayload);
+		return new HTTPResponse(_sendPayload);
 	}
 
 	public CreateSocketResponse SNIC_CreateAdvancedTLSTCP(boolean bind) {
