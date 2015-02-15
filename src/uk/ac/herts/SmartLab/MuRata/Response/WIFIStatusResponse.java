@@ -9,7 +9,7 @@ public class WIFIStatusResponse extends Payload {
 	}
 
 	public WIFIStatusCode GetWiFiStatusCode() {
-		return WIFIStatusCode.parse(this.GetData()[2]);
+		return WIFIStatusCode.parse(this.GetData()[2] & 0xFF);
 	}
 
 	// / <summary>

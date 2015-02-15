@@ -9,7 +9,7 @@ public class InitializationResponse extends Payload {
 	}
 
 	public SNICCode GetStatus() {
-		return SNICCode.parse(this.GetData()[2]);
+		return SNICCode.parse(this.GetData()[2] & 0xFF);
 	}
 
 	public int GetDefaultReceiveBufferSize() {

@@ -9,7 +9,7 @@ public class VersionInfoResponse extends Payload {
 	}
 
 	public CMDCode GetStatus() {
-		return CMDCode.parse(this.GetData()[2]);
+		return CMDCode.parse(this.GetData()[2] & 0xFF);
 	}
 
 	public byte GetVersionStringLength() {

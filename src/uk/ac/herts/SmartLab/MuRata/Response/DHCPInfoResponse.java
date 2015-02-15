@@ -10,7 +10,7 @@ public class DHCPInfoResponse extends Payload {
 	}
 
 	public SNICCode GetStatus() {
-		return SNICCode.parse(this.GetData()[2]);
+		return SNICCode.parse(this.GetData()[2] & 0xFF);
 	}
 
 	public byte[] GetLocalMAC() {
@@ -44,6 +44,6 @@ public class DHCPInfoResponse extends Payload {
 	}
 
 	public DHCPMode GetDHCPMode() {
-		return DHCPMode.parse(this.GetData()[21]);
+		return DHCPMode.parse(this.GetData()[21] & 0xFF);
 	}
 }

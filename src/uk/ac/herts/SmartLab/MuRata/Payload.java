@@ -94,7 +94,7 @@ public class Payload {
 	}
 
 	public void SetPosition(int position) {
-		if (position > this.data.length)
+		if (position >= this.data.length)
 			this.position = this.data.length;
 		else
 			this.position = position;

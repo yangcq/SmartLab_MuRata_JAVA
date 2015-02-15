@@ -32,13 +32,13 @@ public class SSIDRecordIndication extends Payload {
 				list[index]
 						.SetChannel(value[_position++])
 						.SetRSSI(value[_position++])
-						.SetSecurityMode(SecurityMode.parse(value[_position++]))
+						.SetSecurityMode(SecurityMode.parse(value[_position++] & 0xFF))
 						.SetBSSID(
 								new byte[] { value[_position++],
 										value[_position++], value[_position++],
 										value[_position++], value[_position++],
 										value[_position++] })
-						.SetNetworkType(BSSType.parse(value[_position++]))
+						.SetNetworkType(BSSType.parse(value[_position++] & 0xFF))
 						.SetMaxDataRate(value[_position++]);
 
 				_position++;

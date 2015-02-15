@@ -10,11 +10,11 @@ public class WIFIConnectionIndication extends Payload {
 	}
 
 	public WIFIInterface GetInterface() {
-		return WIFIInterface.parse(this.GetData()[2]);
+		return WIFIInterface.parse(this.GetData()[2] & 0xFF);
 	}
 
 	public WIFICode GetStatus() {
-		return WIFICode.parse(this.GetData()[3]);
+		return WIFICode.parse(this.GetData()[3] & 0xFF);
 	}
 
 	public String GetSSID() {
